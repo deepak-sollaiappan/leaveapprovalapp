@@ -1,0 +1,84 @@
+_schema-version: "3.2"
+ID: leaveapprovalapp
+version: 0.0.1
+modules:
+- name: leaveapprovalapp-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: leaveapprovalapp-destination-service
+    parameters:
+      content-target: true
+  - name: leaveapprovalapp_html_repo_host
+    parameters:
+      service-key:
+        name: leaveapprovalapp_html_repo_host-key
+  - name: uaa_leaveapprovalapp
+    parameters:
+      service-key:
+        name: uaa_leaveapprovalapp-key
+  parameters:
+    content:
+      subaccount:
+        destinations:
+        - Name: leaveapprovalapp_service_leaveapprovalapp_html_repo_host
+          ServiceInstanceName: leaveapprovalapp-html5-app-host-service
+          ServiceKeyName: leaveapprovalapp_html_repo_host-key
+          sap.cloud.service: leaveapprovalapp_service
+        - Authentication: OAuth2UserTokenExchange
+          Name: leaveapprovalapp_service_uaa_leaveapprovalapp
+          ServiceInstanceName: leaveapprovalapp-xsuaa-service
+          ServiceKeyName: uaa_leaveapprovalapp-key
+          sap.cloud.service: leaveapprovalapp_service
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: leaveapprovalapp_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: leaveapprovalapp_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - leaveapprovalapp-content.zip
+      name: leaveapprovalapp
+      target-path: resources/
+- name: leaveapprovalapp
+  type: html5
+  path: leaveapprovalapp
+  build-parameters:
+    builder: custom
+    commands:
+    - npm run build
+    supported-platforms: []
+resources:
+- name: leaveapprovalapp-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      version: 1.0.0
+    service: destination
+    service-name: leaveapprovalapp-destination-service
+    service-plan: lite
+- name: leaveapprovalapp_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: leaveapprovalapp-html5-app-host-service
+    service-plan: app-host
+- name: uaa_leaveapprovalapp
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: leaveapprovalapp-xsuaa-service
+    service-plan: application
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm install

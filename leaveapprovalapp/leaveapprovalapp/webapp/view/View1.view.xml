@@ -1,0 +1,44 @@
+<mvc:View controllerName="namespace.leaveapprovalapp.controller.View1" 
+xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m"
+xmlns:l="sap.ui.layout" xmlns:ux="sap.uxap" xmlns:core="sap.ui.core"
+  xmlns:f="sap.ui.layout.form">
+		<App id="app" height="90%">
+			<pages>
+				 <Page id="page" title="Leave Approval UI" showHeader="false" showFooter="false">
+                <content>
+                  <l:VerticalLayout width="100%" id="__layout0">
+ <l:content>
+ <ObjectHeader title="Leave Approval" titleActive="false" id="__header0">
+                            <attributes>
+                                <ObjectAttribute title="createdOn" text="{task>/CreatedOn}"/>
+                                <ObjectAttribute title="description" text="Leave approval for employee"/>
+                            </attributes>
+                            <statuses>
+                                <ObjectStatus text="{task>/Status}" state="None"/>
+                                <ObjectStatus text="{task>/Priority}" state="{task>/PriorityState}"/>
+                            </statuses>
+                        </ObjectHeader>
+                            
+                           
+                                <f:SimpleForm title="Requestor Details" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout">
+                                    <Label text="Full Name"/>
+                                    <Text text="{context>/Requester/Name}"/>
+                                    <Label text="Email Address"/>
+                                    <Text text="{context>/Requester/Email}"/>
+                                </f:SimpleForm>
+
+                                <f:SimpleForm title="Leave Details" maxContainerCols="2" editable="false" layout="ResponsiveGridLayout">
+                                       <Label text="Total Days"/>
+                                        <Text text="{context>/Details/TotalDays}"/>
+                                       <Label text="Reason"/>
+                                        <Text text="{context>/Details/Reason}"/>
+                                        
+                                    </f:SimpleForm>               
+ </l:content>
+                  </l:VerticalLayout>                    
+                </content>
+            </Page>
+			</pages>
+		</App>
+	
+</mvc:View>
